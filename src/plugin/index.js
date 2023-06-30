@@ -49,12 +49,17 @@ module.exports = class FingerprintPlugin {
       args: [`--parent-process-id=${pid}`, `--unique-process-id=${id}`, ...defaultArgs(options)],
     });
 
-    await (spawn ? configure : this.configure.bind(this))(
-      (target) => target === browser && cleaner.include(pid, id),
-      browser,
-      bounds,
-      synchronize.bind(null, id, pwd, bounds)
-    );
+    try{
+      await (spawn ? configure : this.configure.bind(this))(
+          (target) => target === browser && cleaner.include(pid, id),
+          browser,
+          bounds,
+          synchronize.bind(null, id, pwd, bounds)
+      );
+    } catch (error){
+      await browser.close();
+      throw error
+    }
 
     return browser;
   }
