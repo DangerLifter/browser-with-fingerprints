@@ -1,5 +1,5 @@
 const assert = require('assert').strict;
-const { plugin } = require('..');
+const { plugin, FingerprintPlugin } = require('..');
 
 describe('plugin', () => {
   it('should be an object', () => {
@@ -8,11 +8,11 @@ describe('plugin', () => {
   });
 
   it('should be an instance of "FingerprintPlugin"', () => {
-    assert.equal(plugin.constructor.name, 'FingerprintPlugin');
+    assert.equal(plugin.constructor, FingerprintPlugin);
   });
 
   it('should have static class members', () => {
-    assert.equal(typeof plugin.constructor.create, 'function');
+    assert.equal(typeof FingerprintPlugin.create, 'function');
   });
 
   it('should have internal class members', () => {
@@ -23,6 +23,8 @@ describe('plugin', () => {
     for (const method of ['fetch', 'spawn', 'launch', 'useProxy', 'useFingerprint']) {
       assert.equal(typeof plugin[method], 'function');
     }
+    assert.equal(typeof plugin.versions, 'function');
+    assert.equal(typeof plugin.version, 'string');
   });
 
   for (const method of ['useProxy', 'useFingerprint']) {
@@ -38,7 +40,7 @@ describe('plugin', () => {
         assert.throws(() => plugin[method]('', ''));
       });
 
-      it('should return the current instance as a result', () => {
+      it('should return the current plugin instance as a result', () => {
         assert.equal(plugin, plugin[method]());
       });
 
